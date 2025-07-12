@@ -1,0 +1,6 @@
+[submodule "services/core-pipeline"]
+	path = services/core-pipeline
+	url = git@github.com:FramAist/core-pipeline.git
+[submodule "services/FramAist-Milvus"]
+	path = services/FramAist-Milvus
+	url = git@github.com:FramAist/FramAist-Milvus.git
