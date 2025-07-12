@@ -36,11 +36,55 @@ pip install supervisor
 ```
 
 ### 2. 启动所有服务
-```bash
-# 启动supervisor管理的所有服务
-supervisord -c supervisor.conf
 
-# 检查服务状态
+#### 方式1：后台运行（推荐）
+```bash
+# 以守护进程方式启动supervisor（可以关闭终端）
+supervisord -c supervisor.conf -d
+
+# 或者使用完整参数
+supervisord -c supervisor.conf --daemon
+```
+
+#### 方式2：前台运行
+```bash
+# 在当前终端启动supervisor（不能关闭终端）
+supervisord -c supervisor.conf
+```
+
+#### 方式3：使用systemd服务
+```bash
+# 创建systemd服务文件
+sudo tee /etc/systemd/system/autodl-guard.service > /dev/null <<EOF
+[Unit]
+Description=AutoDL Guard Supervisor
+After=network.target
+
+[Service]
+Type=forking
+User=root
+ExecStart=/usr/bin/supervisord -c $(pwd)/supervisor.conf
+ExecReload=/bin/kill -HUP \$MAINPID
+KillMode=process
+Restart=on-failure
+RestartSec=42s
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# 重载systemd配置并启动服务
+sudo systemctl daemon-reload
+sudo systemctl start autodl-guard
+sudo systemctl enable autodl-guard
+
+# 查看服务状态
+sudo systemctl status autodl-guard
+```
+
+#### 检查服务状态
+```bash
+# 检查supervisor管理的服务状态
 supervisorctl -c supervisor.conf status
 ```
 
