@@ -13,5 +13,7 @@ cd services/FramAist-Milvus
 uv sync --extra cu128
 cd ../../
 
+mkdir -p logs
+
 # 启动服务
 # supervisorctl start all
